@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 export class KanbanService {
 
   //private urlBase = 'http://localhost:8080/';
-  private urlBase = 'http://sbdevsophostest.herokuapp.com/';
+  private urlBase = 'https://sbdevsophostest.herokuapp.com/';
   private uri = 'api/kanban/';
 
   constructor(private http: HttpClient, private _auth: AuthService) { }
