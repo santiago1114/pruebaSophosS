@@ -83,7 +83,10 @@ export class KanbanBoardComponent {
     this._kanbanService.createKanbanBoard(
       this.name,
       this._auth.username$.value
-    );
+    ).subscribe({
+      next: console.log,
+      error: console.error  
+    })
   }
 
   onSubmit(form: NgForm) {
