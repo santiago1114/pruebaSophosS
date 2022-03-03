@@ -13,7 +13,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequestMapping("/api/kanban")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 public class KanbanController {
 
     @Autowired
