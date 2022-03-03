@@ -1,0 +1,135 @@
+<div class="container">
+  <div *ngIf="!existKanban">
+    <h1 class="text-center font-mono text-3xl py-2"></h1>
+    <form (ngSubmit)="crearKanban()" #form="ngForm" >
+      <div class="flex flex-wrap justify-center mt-5">
+        <mat-form-field appearance="outline" class="px-3">
+          <mat-label>Nombre del tablero</mat-label>
+          <input
+            
+            matInput
+            placeholder=""
+            name="name"
+            [(ngModel)]="name"
+            #username="ngModel"
+          />
+          <mat-hint *ngIf="hint">Agrega una tarea</mat-hint>
+        </mat-form-field>
+  
+      </div>
+      <div class="flex justify-center">
+        <button type="submit" mat-flat-button color="primary" class="h-12">
+          Crear tablero
+        </button>
+      </div>
+    </form>
+  </div>
+
+
+  <form *ngIf="existKanban" (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <div class="flex flex-wrap justify-center mt-5">
+      <mat-form-field appearance="outline" class="px-3">
+        <mat-label>Descripción tarea</mat-label>
+        <input
+          
+          matInput
+          placeholder=""
+          name="description"
+          [(ngModel)]="activity.description"
+          #username="ngModel"
+        />
+        <mat-hint *ngIf="hint">Agrega una tarea</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="px-3">
+        <mat-label>Estado tarea</mat-label>
+        <mat-select name="type" [(ngModel)]="activity.type">
+          <mat-option value="todo">Por hacer</mat-option>
+          <mat-option value="inprogress">En progreso</mat-option>
+          <mat-option value="done">Realizada</mat-option>
+        </mat-select>
+        <mat-hint *ngIf="hint">Selecciona el estado de tarea</mat-hint>
+      </mat-form-field>
+    </div>
+    <div class="flex justify-center">
+      <button type="submit" mat-flat-button color="primary" class="h-12">
+        Agregar tarea
+      </button>
+    </div>
+  </form>
+
+  <div class="flex md:flex-row flex-col justify-evenly" *ngIf="existKanban">
+    <div class="grow border bg-white p-5 m-5 rounded-lg">
+      <h2
+        class="pl-1 font-mono align-middle text-xl text-blue-600 text-center no-underline border-b-2 border-blue-800"
+      >
+        Por hacer
+      </h2>
+      <div
+        cdkDropList
+        class="list"
+        #todoList="cdkDropList"
+        [cdkDropListData]="kanbanBoard.todo"
+        [cdkDropListConnectedTo]="[inProgressList, doneList]"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div
+          class="border bg-gray-100 shadow-lg rounded-lg p-5 my-2 font-mono text-lg"
+          *ngFor="let item of kanbanBoard.todo"
+          cdkDrag
+        >
+          {{ item }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grow border bg-white p-5 m-5 rounded-lg">
+      <h2
+        class="pl-1 font-mono align-middle text-xl text-orange-600 text-center no-underline border-b-2 border-orange-800"
+      >
+        En progreso
+      </h2>
+      <div
+        cdkDropList
+        class="list"
+        #inProgressList="cdkDropList"
+        [cdkDropListData]="kanbanBoard.inprogress"
+        [cdkDropListConnectedTo]="[todoList, doneList]"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div
+          class="border bg-gray-100 shadow-lg rounded-lg p-5 my-2 font-mono text-lg"
+          *ngFor="let item of kanbanBoard.inprogress"
+          cdkDrag
+        >
+          {{ item }}
+        </div>
+      </div>
+    </div>
+
+    <div class="grow border bg-white p-5 m-5 rounded-lg">
+      <h2
+        class="pl-1 font-mono align-middle text-xl text-green-600 text-center no-underline border-b-2 border-green-800"
+      >
+        Realizadas
+      </h2>
+
+      <div
+        cdkDropList
+        class="list"
+        #doneList="cdkDropList"
+        [cdkDropListData]="kanbanBoard.done"
+        [cdkDropListConnectedTo]="[inProgressList, todoList]"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <div
+          class="border bg-gray-100 shadow-lg rounded-lg p-5 my-2 font-mono text-lg"
+          *ngFor="let item of kanbanBoard.done"
+          cdkDrag
+        >
+          {{ item }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

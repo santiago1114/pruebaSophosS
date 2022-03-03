@@ -1,0 +1,63 @@
+<div class="bg-white font-family-karla h-screen">
+  <div class="w-full flex flex-wrap">
+    <!-- Login Section -->
+    <div class="w-full md:w-1/2 flex flex-col">
+      <div
+        class="flex justify-center md:justify-start pt-12 md:pl-12 md:-mb-24"
+      >
+       <!--  <a><img src="assets/login.png" alt="" /></a> -->
+      </div>
+
+      <div
+        class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32"
+      >
+        <p class="text-center text-3xl">MyKanbanApp</p>
+        <p class="text-center text-xl">
+          Prueba colpatria desarrollado por Carlos Santiago Benitez
+        </p>
+        <form
+          class="flex flex-col pt-3 md:pt-8"
+          (ngSubmit)="login(form)"
+          #form="ngForm"
+        >
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Nombre de usuario</mat-label>
+            <input required matInput placeholder="" name="username" [(ngModel)]="credentials.username" #username="ngModel"/>
+            <mat-error *ngIf="username.invalid && (username.dirty || username.touched)">Ingresa el nombre de usuario</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Contraseña</mat-label>
+            <input required matInput [type]="hide ? 'password' : 'text'" name="password" [(ngModel)]="credentials.password" #password="ngModel" />
+            <mat-error *ngIf="password.invalid && (password.dirty || password.touched)">Ingresa la contraseña</mat-error>
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hide = !hide"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            
+          </mat-form-field>
+
+          <button type="submit"  mat-flat-button color="primary">Iniciar sesión</button>
+
+
+          <p class="text-red-600" *ngIf="errorLogin">
+            Error: Usuario o Contraseña inválidos
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Image Section -->
+    <div class="w-1/2 shadow-2xl">
+      <img
+        class="object-cover w-full h-screen hidden md:block"
+        src="assets/login.png"
+      />
+    </div>
+  </div>
+</div>
