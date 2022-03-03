@@ -84,7 +84,9 @@ export class KanbanBoardComponent {
       this.name,
       this._auth.username$.value
     ).subscribe({
-      next: console.log,
+      next: res => {this.existKanban=true
+      console.log(res);
+      },
       error: console.error  
     })
   }
@@ -99,10 +101,10 @@ export class KanbanBoardComponent {
           this.kanbanBoard.todo.push(this.activity.description);
           break;
         case 'inprogress':
-          this.kanbanBoard.todo.push(this.activity.description);
+          this.kanbanBoard.inprogress.push(this.activity.description);
           break;
         case 'done':
-          this.kanbanBoard.todo.push(this.activity.description);
+          this.kanbanBoard.done.push(this.activity.description);
           break;
         default:
           break;
