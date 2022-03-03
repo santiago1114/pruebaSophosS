@@ -7,7 +7,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private urlBase = 'http://localhost:8080/';
+  //private urlBase = 'http://localhost:8080/';
+  private urlBase = 'http://sbdevsophostest.herokuapp.com/';
+  
   username$ = new BehaviorSubject<string>('');
   authenticated$ = new BehaviorSubject<boolean>(false);
 
