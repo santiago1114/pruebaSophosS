@@ -1,6 +1,8 @@
 package com.scotiabankcolpatria.hiring;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,37 +38,62 @@ public class CreditRiskAssessment {
    */
   public int paymentDelayMaxPeakIndex(int[] paymentDelays) {
 
-    int maxPeakIndex = -1, maxPeakValue = 0, maxPeakIndexAux = 0;
-    int[] auxArray;
-    int maxLocalIndex;
+    List<Integer> invalidIndexes = new ArrayList<>();
+    List<Integer> peaksIdx = new ArrayList<>();
+    List<Double> stds = new ArrayList<>();
+    int maxIdx;
+    boolean valid = false;
+    int[] paymentDelaysAux = Arrays.copyOf(paymentDelays, paymentDelays.length);
 
-    for (int i = 1; i < paymentDelays.length - 1; i++) {
-      auxArray = Arrays.copyOfRange(paymentDelays, i - 1, i + 2);
-      maxLocalIndex = maxIndex(auxArray);
-      if (auxArray[maxLocalIndex]>maxPeakValue) {
-        maxPeakIndex = i + maxLocalIndex - 1;
-        maxPeakValue = auxArray[maxLocalIndex];
-      }
+    do {
 
-      boolean valid = true;
-      for (int j = 0; j < auxArray.length; j++) {
-        if (j != maxLocalIndex) {
-          if (auxArray[maxLocalIndex] <= auxArray[j]) {
-            valid = false;
-            break;
-          }
+      // get index of max value for auxiliary array
+      maxIdx = maxIndex(paymentDelaysAux);
+
+      // Conditional for the first index of the array
+      if (maxIdx == 0){
+
+        if (paymentDelays[maxIdx] > paymentDelays[maxIdx+1] &&
+          paymentDelays[maxIdx] > paymentDelays[maxIdx+2]) {
+
+          stds.add(standardDeviation(new int[]{paymentDelays[maxIdx+1],
+            paymentDelays[maxIdx], paymentDelays[maxIdx+1]}));
+          valid = true;
         }
+        // Conditional for the last index of the array
+      } else if (maxIdx == paymentDelays.length - 1) {
+
+        if (paymentDelays[maxIdx] > paymentDelays[maxIdx-1] &&
+          paymentDelays[maxIdx] > paymentDelays[maxIdx-2]) {
+
+          stds.add(standardDeviation(new int[]{paymentDelays[maxIdx-1],
+            paymentDelays[maxIdx], paymentDelays[maxIdx-2]}));
+          valid = true;
+        }
+
+      } else {
+
+        if (paymentDelays[maxIdx] > paymentDelays[maxIdx-1] &&
+          paymentDelays[maxIdx] > paymentDelays[maxIdx+1]) {
+
+          stds.add(standardDeviation(new int[]{paymentDelays[maxIdx-1],
+            paymentDelays[maxIdx], paymentDelays[maxIdx+1]}));
+          valid = true;
+        }
+
       }
-      if (valid && auxArray[maxLocalIndex] > maxPeakValue){
 
-        maxPeakIndex = i + maxLocalIndex - 1;
-        if (maxPeakIndexAux==0) maxPeakIndexAux = maxPeakIndex;
-        maxPeakValue = paymentDelays[maxPeakIndex];
-      }
+      if (valid) peaksIdx.add(maxIdx); // Add to peak array
+      else invalidIndexes.add(maxIdx); // Add to invalid peak array
+      valid = false;                   // Reset flag
+      paymentDelaysAux[maxIdx] = 0;    // Discard value of auxiliary array
 
-    }
+    } while ((invalidIndexes.size()+peaksIdx.size()) < paymentDelays.length - 1 );
 
-    return maxPeakIndex;
+    maxIdx = maxIndex(stds);           // Get maximum index std of valid peaks
+
+    if (peaksIdx.size() == 0 ) return -1; // When no valid peaks is obtained
+    else return peaksIdx.get(maxIdx);     // Return valid peak with max std
   }
 
   /**
@@ -82,9 +109,9 @@ public class CreditRiskAssessment {
     final double PROBABILITY = 1.0 / PRODUCTS;
     double[] arrayProbabilityByPeriod = new double[PERIODS];
 
-    for (int i = 0; i < PRODUCTS; i++) {
+    for (int[] paymentDelay : paymentDelays) {
       for (int j = 0; j < PERIODS; j++) {
-        if (paymentDelays[i][j] > 0) {
+        if (paymentDelay[j] > 0) {
           arrayProbabilityByPeriod[j] += PROBABILITY;
         }
       }
@@ -107,6 +134,30 @@ public class CreditRiskAssessment {
     return sum / data.length;
   }
 
+  /**
+   * Returns mean value
+   *
+   * @param data 1D List<Double> array
+   * @return mean of data
+   */
+  public static int maxIndex(List<Double> data) {
+    int maxPeakIndex = 0;
+    double maxPeakValue = 0;
+
+    for (int i = 0; i < data.size(); i++) {
+      if (data.get(i) > maxPeakValue) {
+        maxPeakValue = data.get(i);
+        maxPeakIndex = i;
+      }
+    }
+    return maxPeakIndex;
+  }
+
+  /**
+   * Gets index of maximum value from array
+   * @param data int 1D array
+   * @return     int index
+   */
   public static int maxIndex(int[] data) {
     int maxPeakIndex = 0, maxPeakValue = 0;
 
@@ -118,5 +169,6 @@ public class CreditRiskAssessment {
     }
     return maxPeakIndex;
   }
+
 
 }
